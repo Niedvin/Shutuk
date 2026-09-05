@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# PostToolUse hook: note ccshut breaches in a file just written. Never blocks.
+
+set -uo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "${SCRIPT_DIR}/pyfind.sh"
+PY="$(shut_py)" || exit 0
+exec "$PY" "${SCRIPT_DIR}/comment_gate.py"

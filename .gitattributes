@@ -1,0 +1,5 @@
+# run-hook.cmd is a POSIX polyglot too: CRLF would break its bash half on macOS.
+* text=auto eol=lf
+/install.cmd text eol=crlf
+/uninstall.cmd text eol=crlf
+*.zip binary

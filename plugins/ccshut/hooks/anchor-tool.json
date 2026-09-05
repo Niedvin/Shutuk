@@ -1,0 +1,7 @@
+{
+  "suppressOutput": true,
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "<ccshut-anchor>\n<ccshut> from session start still holds and outranks any skill, project file or local\nconvention loaded since it. Every comment you write or leave standing: both gates, one line,\nends \" - YYYY-MM-DD\", under 5% of a file's lines; doc comments get no exception.\nNothing a reader recovers from the code in 5 seconds. TODO, FIXME and notes for the user go\ninto your reply, never into the file.\n</ccshut-anchor>"
+  }
+}

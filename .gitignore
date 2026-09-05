@@ -1,0 +1,15 @@
+# The Python installers: superseded by install.ps1 / install.sh, kept local only.
+/install.py
+/uninstall.py
+
+# Machine state: holds the real paths install.* touched on one machine.
+uninstall.json
+.shut-install.json
+
+__pycache__/
+*.pyc
+*.bak
+*.bak-*
+*.off-by-shut/
+.DS_Store
+Thumbs.db

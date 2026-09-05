@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# PostToolUse hook: flag a bad step label between calls, while it can still change the next one.
+
+set -uo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "${SCRIPT_DIR}/pyfind.sh"
+PY="$(shut_py)" || exit 0
+exec "$PY" "${SCRIPT_DIR}/label_watch.py"

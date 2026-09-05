@@ -1,0 +1,19 @@
+{
+  "name": "bequiet",
+  "description": "Splits session speech into four shapes: four-word English step labels while working, plain Ukrainian for questions, warnings and the final answer. Injected at session start so it cannot be dropped mid-session.",
+  "version": "2.5.1",
+  "author": {
+    "name": "Niedvin"
+  },
+  "homepage": "https://github.com/Niedvin/Shut",
+  "repository": "https://github.com/Niedvin/Shut",
+  "license": "MIT",
+  "keywords": [
+    "communication",
+    "brevity",
+    "plain-language",
+    "token-budget",
+    "ukrainian"
+  ],
+  "defaultEnabled": true
+}

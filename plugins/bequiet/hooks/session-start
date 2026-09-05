@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SessionStart hook: inject the bequiet rule so it holds for the whole session.
+
+set -uo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "${SCRIPT_DIR}/pyfind.sh"
+SRC="${SCRIPT_DIR}/context.md"
+OUT="${SCRIPT_DIR}/session-start.json"
+
+if [ "$SRC" -nt "$OUT" ] && PY="$(shut_py)"; then
+    "$PY" "${SCRIPT_DIR}/build.py" >/dev/null 2>&1 || true
+fi
+
+[ -f "$OUT" ] || exit 0
+cat "$OUT"
+exit 0
