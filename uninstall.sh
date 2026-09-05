@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Remove CCShut and BeQuiet from every agent install.sh put them in, and put caveman back.
+# Remove CCShut and Shut from every agent install.sh put them in, and put caveman back.
 #
 # The macOS twin of uninstall.py. Needs no zips.
 #
@@ -13,7 +13,7 @@ set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 MARKER=".shut-install.json"
 HOOK_PREFIX="shut-"
-PACKAGES="ccshut bequiet"
+PACKAGES="ccshut shut"
 BACKUPS="$HOME/.shut-backups"
 CAVEMAN_STATE="$BACKUPS/caveman-state.json"
 UNINSTALL_STATE="$BACKUPS/uninstall.json"

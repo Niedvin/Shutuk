@@ -176,7 +176,7 @@ OPS['hook-trusted'] = function (hooksFile, configToml, prefix) {
     return 0;
 };
 
-// `language` is dropped, not set: any value injects "Always respond in <lang>", killing bequiet's split — 2026-09-05
+// `language` is dropped, not set: any value injects "Always respond in <lang>", killing shut's split — 2026-09-05
 OPS['settings-apply'] = function (file, stateFile, mode, dry) {
     var wanted = {};
     if (mode === 'env' || mode === 'both') { wanted.env = true; }

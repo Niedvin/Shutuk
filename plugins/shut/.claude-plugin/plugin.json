@@ -1,0 +1,19 @@
+{
+  "name": "shut",
+  "description": "Економія токенів: прибирає звіти про процес, оголошення викликів інструментів і решту тексту, який нічого не змінює. Чотири форми — англійська мітка кроку до 4 слів, а питання, попередження і фінальна відповідь (до 8 рядків) українською. Код і результат роботи не чіпає.",
+  "version": "2.5.1",
+  "author": {
+    "name": "Niedvin"
+  },
+  "homepage": "https://github.com/Niedvin/Shutuk",
+  "repository": "https://github.com/Niedvin/Shutuk",
+  "license": "MIT",
+  "keywords": [
+    "communication",
+    "brevity",
+    "plain-language",
+    "token-budget",
+    "ukrainian"
+  ],
+  "defaultEnabled": true
+}

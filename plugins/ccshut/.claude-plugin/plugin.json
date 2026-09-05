@@ -1,12 +1,12 @@
 {
   "name": "ccshut",
-  "description": "Holds code comments to two gates: a comment ships only if it stays true after the code is rewritten and a senior could not have recovered it from the code. Injected at session start so it cannot be dropped mid-session.",
+  "description": "Проти context rot: коментар пишеться, лише якщо лишиться правдивим після переписування коду і якщо сеньйор не відновив би його з самого коду. Один рядок із датою, менше 5% рядків файлу; застарілі й декоративні коментарі видаляються.",
   "version": "2.4.1",
   "author": {
     "name": "Niedvin"
   },
-  "homepage": "https://github.com/Niedvin/Shut",
-  "repository": "https://github.com/Niedvin/Shut",
+  "homepage": "https://github.com/Niedvin/Shutuk",
+  "repository": "https://github.com/Niedvin/Shutuk",
   "license": "MIT",
   "keywords": [
     "comments",

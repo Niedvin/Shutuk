@@ -1,4 +1,4 @@
-"""Stop-hook check: block a turn that broke bequiet's shapes. Zero model tokens when clean."""
+"""Stop-hook check: block a turn that broke shut's shapes. Zero model tokens when clean."""
 from __future__ import annotations
 
 import json
@@ -98,14 +98,14 @@ def check(blocks: list[tuple[str, bool]]) -> str | None:
             continue
 
         if any(HEADING.match(ln) for ln in lines):
-            return with_labels("The answer used a markdown heading. bequiet bans headings. Rewrite it as plain Ukrainian sentences.", labels)
+            return with_labels("The answer used a markdown heading. shut bans headings. Rewrite it as plain Ukrainian sentences.", labels)
         if sum(1 for ln in lines if TABLE.match(ln) and ln.count("|") >= 2):
-            return with_labels("The answer used a table. bequiet bans tables. Rewrite it as plain Ukrainian sentences.", labels)
+            return with_labels("The answer used a table. shut bans tables. Rewrite it as plain Ukrainian sentences.", labels)
         if len(words) >= ANSWER_MIN_WORDS and not CYRILLIC.search(body):
-            return with_labels("The final answer is in English. bequiet requires Ukrainian for the answer. Rewrite it.", labels)
+            return with_labels("The final answer is in English. shut requires Ukrainian for the answer. Rewrite it.", labels)
         if len(lines) > ANSWER_LINES:
             return with_labels(
-                f"The final answer ran {len(lines)} lines. bequiet caps it at 8. "
+                f"The final answer ran {len(lines)} lines. shut caps it at 8. "
                 "Delete the facts the user cannot act on, do not reflow them.", labels)
     return None
 

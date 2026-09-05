@@ -1,4 +1,4 @@
-# bequiet
+# shut
 
 Splits everything said in a session into four shapes, so working is quiet and the answer is
 readable by someone who does not write code.
@@ -19,7 +19,7 @@ the terms this reader will not have to click or type. Terms they already use sta
 
 ## How it loads
 
-It lives in `~/.claude/skills/`, so Claude Code loads it as `bequiet@skills-dir` in every
+It lives in `~/.claude/skills/`, so Claude Code loads it as `shut@skills-dir` in every
 project with no marketplace and no install step. Its `SessionStart` hook fires on `startup`,
 `resume`, `clear` and `compact`, and injects `hooks/context.md` into the conversation. Because the rule
 lands in the conversation itself, disabling the plugin mid-session does not remove it.
@@ -33,13 +33,13 @@ lands in the conversation itself, disabling the plugin mid-session does not remo
 | `hooks/build.py` | Rebuilds the payload from `context.md`. |
 | `hooks/session-start` | The hook. Rebuilds if stale, then prints the payload. |
 | `hooks/run-hook.cmd` | Polyglot cmd/bash wrapper so the hook runs on Windows too. |
-| `skills/bequiet/SKILL.md` | The full rule, loaded on demand. |
+| `skills/shut/SKILL.md` | The full rule, loaded on demand. |
 
 ## Editing the rule
 
 ```bash
-$EDITOR ~/.claude/skills/bequiet/hooks/context.md
-python  ~/.claude/skills/bequiet/hooks/build.py   # optional; the hook self-heals
+$EDITOR ~/.claude/skills/shut/hooks/context.md
+python  ~/.claude/skills/shut/hooks/build.py   # optional; the hook self-heals
 ```
 
 Hook changes need `/reload-plugins` or a restart. `SKILL.md` edits apply immediately.
@@ -47,7 +47,7 @@ Hook changes need `/reload-plugins` or a restart. `SKILL.md` edits apply immedia
 ## Turning it off
 
 ```bash
-claude plugin disable bequiet@skills-dir
+claude plugin disable shut@skills-dir
 ```
 
 Takes effect from the next session. Deleting the folder also works.

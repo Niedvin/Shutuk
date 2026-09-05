@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Remove CCShut and BeQuiet from every agent install.ps1 put them in, and put caveman back.
+    Remove CCShut and Shut from every agent install.ps1 put them in, and put caveman back.
 
 .DESCRIPTION
     The PowerShell twin of uninstall.py. Needs nothing but Windows PowerShell 5.1, and no zips.
@@ -24,7 +24,7 @@ $UserHome = if ($env:USERPROFILE) { $env:USERPROFILE } elseif ($env:HOME) { $env
 $Here     = Split-Path -Parent $PSCommandPath
 $Marker   = '.shut-install.json'
 $HookPrefix = 'shut-'
-$Packages = @('ccshut', 'bequiet')
+$Packages = @('ccshut', 'shut')
 $Backups  = Join-Path $UserHome '.shut-backups'
 $CavemanStateFile = Join-Path $Backups 'caveman-state.json'
 $UninstallState   = Join-Path $Backups 'uninstall.json'

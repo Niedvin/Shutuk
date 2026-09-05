@@ -1,200 +1,215 @@
-# Shut
+# Shutuk
 
-Two plugins that cut what a coding agent writes — the comments it leaves in your code, and the
-text it prints at you. Both are injected at session start, so they hold for the whole session
-instead of loading only when the agent decides they are relevant.
+Два плагіни, які ріжуть зайвий текст ШІ-агента: **Shut** — те, що він пише вам у чат,
+**CCShut** — те, що він лишає коментарями у вашому коді. Обидва вантажаться на старті сесії,
+тому діють від першого повідомлення, а не з моменту, коли агент сам вирішить, що вони доречні.
 
-They install into Claude Code and Claude Desktop as plugins, and into Codex, opencode, Gemini
-CLI and Cursor as skills.
+Українська версія: питання, попередження і фінальна відповідь — українською.
+Англомовна версія — [Shuten](https://github.com/Niedvin/Shuten).
+
+Ставляться в Claude Code і Claude Desktop як плагіни, а в Codex, opencode, Gemini CLI і
+Cursor — як скіли.
 
 ---
 
-## The two plugins
+## Що саме роблять
 
-### CCShut — comments
+### Shut — економія токенів
 
-Every comment must pass two gates, or it is not written:
+Проблема: агент витрачає ваші токени на текст, який нічого не змінює — звіти про власний
+процес, оголошення «зараз я прочитаю файл», переказ вашого ж запиту, підсумкові таблиці на
+пів екрана. Ви за це платите і нічого з цього не робите.
 
-1. **Permanence** — still true after the code around it has been rewritten.
-2. **Irreducibility** — a senior engineer already working in that repo could not have recovered
-   it from the names, types, control flow, or one call site away.
+Shut дозволяє рівно чотири форми повідомлення і нічого більше:
 
-On top of that: one line each, ending in the date it was written (` — 2026-09-05`), under 5% of
-a file's lines, no doc-comment exception. Comments already in a file you edit go through the
-same gates — the failing ones get deleted. TODO, FIXME and notes meant for you go into the
-reply, never into the file.
-
-A `PostToolUse` hook re-checks every file the agent writes and flags breaches back to it.
-
-### BeQuiet — talk
-
-Every message the agent sends is one of four shapes, and nothing else:
-
-| Shape | Language | Rule |
+| Форма | Мова | Правило |
 |---|---|---|
-| Step label | English | ≤ 4 words, no punctuation inside, usually omitted entirely |
-| Question | plain Ukrainian | only when two readings would change what gets built |
-| Warning | plain Ukrainian | only when you must decide or act right now |
-| Answer | plain Ukrainian | ≤ 8 lines, no tables, no headings, no write-up of the steps |
+| Мітка кроку | англійська | ≤ 4 слова, без ком і тире всередині, найчастіше взагалі відсутня |
+| Питання | проста українська | лише коли два прочитання змінили б те, що буде зроблено |
+| Попередження | проста українська | лише коли вам треба вирішити або діяти просто зараз |
+| Відповідь | проста українська | ≤ 8 рядків, без таблиць, без заголовків, без переліку зроблених кроків |
 
-No progress chatter, no announcing a tool call before making it, no restating your request, no
-telling you to go test your own product. Numbers are digits and relations are symbols
-(`>`, `≈`, `→`, `∵`), in both languages.
+Ніяких коментарів по ходу роботи, ніякого оголошення виклику інструмента перед самим
+викликом, ніякого «запусти і подивись, як воно працює». Числа — цифрами, зв'язки —
+символами (`>`, `≈`, `→`, `∵`), в обох мовах.
 
-Hooks re-assert the rule after every skill load and score the turn before it ends, so it does
-not decay over a long session.
+**Код і результат роботи це не чіпає.** Правило стосується тільки того, що агент вам пише.
 
-The Ukrainian half is a personal setting. Change the language in
-`plugins/bequiet/hooks/context.md` and `plugins/bequiet/always-on.md`, then re-install.
+Хуки перевстановлюють правило після кожного завантаження скіла і перевіряють хід перед
+його завершенням, тому воно не розмивається за довгу сесію.
+
+### CCShut — проти context rot
+
+Проблема: агент засипає файл коментарями, які пояснюють те, що й так видно з коду. Через
+кілька правок код змінився, а коментар лишився — і тепер він бреше. Кожне наступне читання
+цього файлу (вами чи агентом) коштує токенів і веде хибним шляхом. Це і є context rot.
+
+Коментар пишеться, лише якщо проходить обидва фільтри:
+
+1. **Незмінність** — лишається правдивим після того, як код навколо переписали.
+2. **Невідновлюваність** — сеньйор, який уже працює в цьому репо, не відновив би це з імен,
+   типів, потоку керування чи одного виклику поруч.
+
+Плюс: один рядок на коментар, у кінці дата написання (` — 2026-09-05`), менше 5% рядків
+файлу, без винятку для док-коментарів. Коментарі, що вже лежать у файлі, який агент редагує,
+проходять ті самі фільтри — ті, що не пройшли, видаляються. TODO, FIXME і нотатки для вас
+ідуть у відповідь, а не у файл.
+
+Хук `PostToolUse` перевіряє кожен записаний файл і повертає агенту список порушень.
 
 ---
 
-## Install
+## Встановлення
 
-### Claude Code and Claude Desktop — marketplace
-
-```
-/plugin marketplace add Niedvin/Shut
-/plugin install ccshut@shut
-/plugin install bequiet@shut
-```
-
-Updates then come with `/plugin marketplace update shut`.
-
-### Claude Desktop — drag and drop
-
-Download [`dist/CCShut.zip`](dist/CCShut.zip) and [`dist/BeQuiet.zip`](dist/BeQuiet.zip) and
-drop each into the plugin upload box. One zip per plugin; each has `.claude-plugin/plugin.json`
-at its root, which is what the uploader checks for.
-
-### Codex, opencode, Gemini CLI, Cursor — the installer
-
-The marketplace is Claude-only. For the rest, clone the repo and run the pair for your OS.
-Both pairs do exactly the same thing and leave byte-identical files behind.
+### Claude Code і Claude Desktop — через marketplace
 
 ```
-git clone https://github.com/Niedvin/Shut
-cd Shut
+/plugin marketplace add Niedvin/Shutuk
+/plugin install ccshut@shutuk
+/plugin install shut@shutuk
 ```
 
-| OS | Install | Remove | Needs |
+Своє репо на GitHub працює як marketplace без жодної реєстрації: Claude клонує його сам і
+читає `.claude-plugin/marketplace.json`. Оновлення — `/plugin marketplace update shutuk`.
+
+### Claude Desktop — перетягуванням
+
+Завантажте [`dist/CCShut.zip`](dist/CCShut.zip) і [`dist/Shut.zip`](dist/Shut.zip) і киньте
+кожен у вікно завантаження плагіна. Один зіп на плагін; у корені кожного лежить
+`.claude-plugin/plugin.json` — саме його шукає завантажувач.
+
+### Codex, opencode, Gemini CLI, Cursor — інсталятором
+
+Marketplace є тільки в Claude. Для решти склонуйте репо і запустіть пару під свою ОС. Обидві
+пари роблять те саме і лишають байт-у-байт однакові файли.
+
+```
+git clone https://github.com/Niedvin/Shutuk
+cd Shutuk
+```
+
+| ОС | Встановити | Видалити | Потрібно |
 |---|---|---|---|
-| Windows | double-click `install.cmd`, or `powershell -ExecutionPolicy Bypass -File install.ps1` | `uninstall.cmd` | nothing — PowerShell 5.1 ships with Windows 10/11 |
-| macOS | `bash install.sh` | `bash uninstall.sh` | nothing — bash, unzip and osascript ship with macOS |
-| Linux | `bash install.sh` | `bash uninstall.sh` | `node`, for the JSON edits |
+| Windows | подвійний клік на `install.cmd`, або `powershell -ExecutionPolicy Bypass -File install.ps1` | `uninstall.cmd` | нічого — PowerShell 5.1 є в Windows 10/11 |
+| macOS | `bash install.sh` | `bash uninstall.sh` | нічого — bash, unzip і osascript є в macOS |
+| Linux | `bash install.sh` | `bash uninstall.sh` | `node`, для правок JSON |
 
-The installer detects which agents are on the machine and skips the rest. `--dry-run` prints
-the whole plan and changes nothing — run that first if you want to see the list.
+Інсталятор сам знаходить, які агенти стоять на машині, і решту пропускає. `--dry-run` друкує
+весь план і не змінює нічого — запустіть спершу його, якщо хочете побачити список.
 
 ---
 
-## What the installer touches, and why
+## Що інсталятор чіпає і навіщо
 
-It edits files under your home directory. Nothing runs as admin, nothing leaves the machine,
-and every file it changes is backed up next to itself first. In full, it:
+Він редагує файли у вашій домашній теці. Нічого не запускається від адміністратора, нічого не
+йде назовні, кожен змінений файл спершу копіюється поруч.
 
-| Path | What happens | Why |
+| Шлях | Що відбувається | Навіщо |
 |---|---|---|
-| `~/.claude/skills/{ccshut,bequiet}/` | plugin copied in | Claude Code loads plugins from here |
-| `~/.codex/skills/`, `~/.config/opencode/skills/`, `~/.gemini/skills/`, `~/.cursor/skills-cursor/`, `~/.agents/skills/` | flat `SKILL.md` copied in | each agent reads skills from its own path |
-| `~/.codex/hooks.json` + `~/.codex/hooks/shut-*` | two `SessionStart` entries added | a skill loads on demand, which is too late for a rule about how to talk; the hook injects it every session. Every other hook in the file is left alone |
-| `~/.config/opencode/AGENTS.md`, `~/.gemini/GEMINI.md` | a marked block added | those agents have no session-start hook, so the text lives in the file they read every session |
-| `~/.claude/settings.json` | `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION=false`, `CLAUDE_CODE_ENABLE_AWAY_SUMMARY=0` | both print text BeQuiet forbids |
-| `~/.claude/settings.local.json` | `outputStyle: Shut` | a built-in output style can drop the brevity rules; this one restates them |
-| `~/.claude/output-styles/shut.md` | installed | the output style itself |
-| every project `.claude/` it finds | same two settings | so the rule holds in each project, not just globally |
-| any `language` key in those settings | **removed** | any value there injects "Always respond in \<lang\>" over every explanation, which overrides BeQuiet's English-label / Ukrainian-answer split whichever language it names |
-| `~/.shut-backups/` | originals and state | what `uninstall` reads to put everything back |
+| `~/.claude/skills/{ccshut,shut}/` | копіюється плагін | звідси Claude Code вантажить плагіни |
+| `~/.codex/skills/`, `~/.config/opencode/skills/`, `~/.gemini/skills/`, `~/.cursor/skills-cursor/`, `~/.agents/skills/` | копіюється плаский `SKILL.md` | кожен агент читає скіли зі свого шляху |
+| `~/.codex/hooks.json` + `~/.codex/hooks/shut-*` | додаються два записи `SessionStart` | скіл вантажиться на вимогу, а для правила про те, як говорити, це вже пізно; хук вкидає його щосесії. Решту хуків у файлі не чіпає |
+| `~/.config/opencode/AGENTS.md`, `~/.gemini/GEMINI.md` | додається позначений блок | у цих агентів немає session-start хука, тому текст лежить у файлі, який вони читають щосесії |
+| `~/.claude/settings.json` | `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION=false`, `CLAUDE_CODE_ENABLE_AWAY_SUMMARY=0` | обидва друкують текст, який Shut забороняє |
+| `~/.claude/settings.local.json` | `outputStyle: Shut` | вбудований output style може скинути правила стислості; цей їх повторює |
+| `~/.claude/output-styles/shut.md` | встановлюється | сам output style |
+| кожна знайдена проєктна тека `.claude/` | ті самі два налаштування | щоб правило діяло в кожному проєкті, а не лише глобально |
+| ключ `language` у цих налаштуваннях | **видаляється** | будь-яке значення там вкидає «Always respond in \<lang\>» на всі пояснення і перебиває поділ Shut на англійську мітку та українську відповідь — хоч би яку мову там вказали |
+| `~/.shut-backups/` | оригінали і стан | звідси `uninstall` усе повертає назад |
 
-**Why it reads the disk.** Finding project `.claude` folders is the only step that looks
-outside your home directory: it walks `$HOME` plus each local drive (Windows) or each volume
-under `/Volumes` (macOS), four levels deep, skipping `Library`, `AppData`, `node_modules`,
-build output and every dot-directory. It reads directory names, opens only files named
-`settings.json` / `settings.local.json`, and writes only those. Removable and network drives
-are never touched. Pass `--dry-run` to see the exact list before anything is written, or
-`--only claude` to keep it to the global config.
+**Навіщо йому доступ до диска.** Пошук проєктних тек `.claude` — єдиний крок, що виходить за
+межі домашньої теки: він обходить `$HOME` плюс кожен локальний диск (Windows) або кожен том у
+`/Volumes` (macOS) на чотири рівні вглиб, пропускаючи `Library`, `AppData`, `node_modules`,
+теки збірки і всі теки з крапки. Він читає імена тек, відкриває тільки файли з іменами
+`settings.json` / `settings.local.json` і пише тільки в них. Знімні й мережеві диски не
+чіпаються взагалі. `--dry-run` покаже точний список до того, як щось запишеться, а
+`--only claude` обмежить усе глобальним конфігом.
 
-On macOS, `~/Desktop`, `~/Documents` and `~/Downloads` are hidden from a terminal without Full
-Disk Access. Projects under them are skipped; the installer names the folders and says so.
-Granting access is optional.
-
----
-
-## Uninstall
-
-```
-uninstall.cmd                 # Windows
-bash uninstall.sh             # macOS / Linux
-/plugin uninstall ccshut@shut # Claude Code, if you installed via the marketplace
-```
-
-It removes only what the installer put there: skill folders carrying a `.shut-install.json`
-marker (`--force` for the rest), its own entries in `~/.codex/hooks.json`, the marked blocks,
-and every settings value it changed — restored from `~/.shut-backups/uninstall.json`. Every
-file it edits is copied to `*.bak-uninstall` first.
+На macOS `~/Desktop`, `~/Documents` і `~/Downloads` приховані від термінала без Full Disk
+Access. Проєкти під ними просто пропускаються; інсталятор називає ці теки і каже про це.
+Давати доступ необов'язково.
 
 ---
 
-## Options
-
-Same set in both installers; PowerShell spells them as switches.
+## Видалення
 
 ```
---dry-run       -DryRun         print the plan, change nothing
---list          -List           list the agents it found
---only claude   -Only claude    one agent (comma-separated for several)
---skip gemini   -Skip gemini    leave one alone
---no-always-on  -NoAlwaysOn     skills and hooks only, do not touch AGENTS.md
---no-hooks      -NoHooks        skills and AGENTS.md only, no Codex hook
---keep-caveman  -KeepCaveman    leave the caveman skill enabled
+uninstall.cmd                   # Windows
+bash uninstall.sh               # macOS / Linux
+/plugin uninstall ccshut@shutuk # Claude Code, якщо ставили через marketplace
 ```
 
-Removal takes `--force` / `-Force` and `--keep-caveman-off` / `-KeepCavemanOff`.
+Видаляє лише те, що поставив інсталятор: теки скілів із маркером `.shut-install.json`
+(`--force` для решти), власні записи в `~/.codex/hooks.json`, позначені блоки і кожне змінене
+налаштування — відновлене з `~/.shut-backups/uninstall.json`. Кожен файл, який редагує,
+спершу копіює в `*.bak-uninstall`.
 
 ---
 
-## Notes
+## Опції
 
-**Codex trust.** Codex will not run a new hook until you trust it. Run `/hooks` inside Codex,
-trust the two `shut-` entries, then run the installer again — it sees they are trusted and
-drops the now-duplicate `AGENTS.md` block. Until then both are in place, so the rule is never off.
+Однаковий набір в обох інсталяторах; PowerShell пише їх як ключі.
 
-**Caveman.** If the `caveman` skill is installed it is turned off, because two rewriters of the
-same reply is not a defined state. Exactly what was done is recorded in
-`~/.shut-backups/caveman-state.json` and undone by `uninstall`. `--keep-caveman` skips it.
-Hand-written "use /caveman" lines in your own `CLAUDE.md` are named, never edited.
+```
+--dry-run       -DryRun         надрукувати план, нічого не змінювати
+--list          -List           показати знайдених агентів
+--only claude   -Only claude    один агент (через кому — кілька)
+--skip gemini   -Skip gemini    одного пропустити
+--no-always-on  -NoAlwaysOn     тільки скіли й хуки, AGENTS.md не чіпати
+--no-hooks      -NoHooks        тільки скіли й AGENTS.md, без хука Codex
+--keep-caveman  -KeepCaveman    лишити скіл caveman увімкненим
+```
 
-**macOS.** The hook payloads ship prebuilt inside the plugins, so the rule holds on a Mac with
-no Python at all — only the three gates that score a turn need one, and they exit quietly
-without it. Hook scripts prefer `python3` and skip `/usr/bin/python3` unless `xcode-select -p`
-succeeds, because that path is a stub that pops the Xcode Command Line Tools installer.
-
-**Project files.** Both plugins carry the whole rule, so a project's `CLAUDE.md` / `AGENTS.md`
-does not need to restate any of it and should not. A project line like "reply in Ukrainian"
-reads as covering everything the session writes, which contradicts BeQuiet's split. A project
-may add to these rules — never loosen them.
-
-**Re-running** upgrades in place and changes nothing that is already correct. Anything already
-sitting at a target path is moved to `~/.shut-backups/`, never deleted.
+Видалення приймає `--force` / `-Force` і `--keep-caveman-off` / `-KeepCavemanOff`.
 
 ---
 
-## Repo layout
+## Примітки
+
+**Довіра в Codex.** Codex не запустить новий хук, доки ви йому не довіритеся. Виконайте
+`/hooks` всередині Codex, довіртеся двом записам `shut-`, тоді запустіть інсталятор ще раз —
+він побачить довіру і прибере тепер уже дубльований блок в `AGENTS.md`. До того обидва на
+місці, тож правило не вимикається ні на мить.
+
+**Caveman.** Якщо стоїть скіл `caveman`, він вимикається: два переписувачі однієї відповіді —
+це не визначений стан. Що саме зроблено, записано в `~/.shut-backups/caveman-state.json` і
+повертається через `uninstall`. `--keep-caveman` пропускає цей крок. Написані вами рядки
+«use /caveman» у власному `CLAUDE.md` інсталятор називає, але не редагує.
+
+**macOS.** Готовий JSON для хуків лежить усередині плагінів, тому правило працює на маку
+взагалі без Python — він потрібен лише трьом перевіркам, які оцінюють хід, і без нього вони
+просто тихо виходять. Скрипти хуків беруть `python3` і пропускають `/usr/bin/python3`, поки
+`xcode-select -p` не спрацює: цей шлях — заглушка, що відкриває інсталятор Xcode CLT.
+
+**Проєктні файли.** Обидва плагіни несуть правило цілком, тому проєктний `CLAUDE.md` /
+`AGENTS.md` не має його переказувати. Рядок «відповідай українською» в проєкті читається як
+«усе, що пише сесія», а це суперечить поділу Shut. Проєкт може додавати до цих правил —
+послаблювати ні.
+
+**Повторний запуск** оновлює на місці і не чіпає того, що вже правильне. Усе, що вже лежало
+за цільовим шляхом, переїжджає в `~/.shut-backups/`, а не видаляється.
+
+**Змінити мову** можна в `plugins/shut/hooks/context.md` і `plugins/shut/always-on.md` —
+або просто взяти [Shuten](https://github.com/Niedvin/Shuten), де ці три форми англійською.
+
+---
+
+## Розкладка репо
 
 ```
-.claude-plugin/marketplace.json   the marketplace manifest
-plugins/ccshut/                   the CCShut plugin (.claude-plugin/, hooks/, skills/)
-plugins/bequiet/                  the BeQuiet plugin
-dist/*.zip                        the same two plugins, zipped for drag-and-drop
-install.ps1 / uninstall.ps1       Windows installer, plus .cmd wrappers
-install.sh / uninstall.sh         macOS and Linux installer
-shut-json.js                      JSON editor the shell installer runs through osascript or node
-shut.md                           the Claude Code output style
+.claude-plugin/marketplace.json   маніфест marketplace
+plugins/ccshut/                   плагін CCShut (.claude-plugin/, hooks/, skills/)
+plugins/shut/                     плагін Shut
+dist/*.zip                        ті самі два плагіни, запаковані для перетягування
+install.ps1 / uninstall.ps1       інсталятор для Windows, плюс обгортки .cmd
+install.sh / uninstall.sh         інсталятор для macOS і Linux
+shut-json.js                      редактор JSON, який шелловий інсталятор запускає через osascript або node
+shut.md                           output style для Claude Code
 ```
 
-`always-on.md`, `manifest.json` and `flat/SKILL.md` inside each plugin folder are read by the
-installer and stripped from what it copies into Claude Code.
+`always-on.md`, `manifest.json` і `flat/SKILL.md` усередині теки плагіна читає інсталятор; у
+Claude Code вони не копіюються.
 
-## License
+## Ліцензія
 
-MIT — see [LICENSE](LICENSE).
+MIT — див. [LICENSE](LICENSE).

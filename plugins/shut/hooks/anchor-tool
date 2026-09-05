@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# SessionStart hook: inject the bequiet rule so it holds for the whole session.
+# PostToolUse hook: re-assert the shut rule after anything that could have buried it.
 
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 . "${SCRIPT_DIR}/pyfind.sh"
-SRC="${SCRIPT_DIR}/context.md"
-OUT="${SCRIPT_DIR}/session-start.json"
+SRC="${SCRIPT_DIR}/anchor.md"
+OUT="${SCRIPT_DIR}/anchor-tool.json"
 
 if [ "$SRC" -nt "$OUT" ] && PY="$(shut_py)"; then
     "$PY" "${SCRIPT_DIR}/build.py" >/dev/null 2>&1 || true
