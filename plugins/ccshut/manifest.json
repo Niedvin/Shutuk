@@ -1,0 +1,7 @@
+{
+  "name": "ccshut",
+  "title": "CCShut",
+  "version": "2.4.1",
+  "flat_skill": "flat/SKILL.md",
+  "always_on": "always-on.md"
+}

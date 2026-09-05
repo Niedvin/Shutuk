@@ -1,0 +1,52 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "shut",
+  "description": "Two rules that cut what a coding agent writes: comments (CCShut) and talk (BeQuiet).",
+  "owner": {
+    "name": "Niedvin"
+  },
+  "plugins": [
+    {
+      "name": "ccshut",
+      "displayName": "CCShut",
+      "source": "./plugins/ccshut",
+      "description": "Holds code comments to two gates: a comment ships only if it stays true after the code is rewritten and a senior could not have recovered it from the code. One dated line each, under 5% of a file's lines.",
+      "version": "2.4.1",
+      "author": {
+        "name": "Niedvin"
+      },
+      "homepage": "https://github.com/Niedvin/Shut",
+      "repository": "https://github.com/Niedvin/Shut",
+      "license": "MIT",
+      "category": "productivity",
+      "keywords": [
+        "comments",
+        "code-quality",
+        "context-rot",
+        "token-budget",
+        "documentation"
+      ]
+    },
+    {
+      "name": "bequiet",
+      "displayName": "BeQuiet",
+      "source": "./plugins/bequiet",
+      "description": "Splits session speech into four shapes: a four-word English step label while working, plain Ukrainian for the question, the warning and the 8-line final answer. No progress chatter, no announcing a tool call.",
+      "version": "2.5.1",
+      "author": {
+        "name": "Niedvin"
+      },
+      "homepage": "https://github.com/Niedvin/Shut",
+      "repository": "https://github.com/Niedvin/Shut",
+      "license": "MIT",
+      "category": "productivity",
+      "keywords": [
+        "communication",
+        "brevity",
+        "plain-language",
+        "token-budget",
+        "ukrainian"
+      ]
+    }
+  ]
+}
