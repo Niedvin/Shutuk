@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "shut",
-  "description": "Two rules that cut what a coding agent writes: comments (CCShut) and talk (BeQuiet).",
+  "name": "shutuk",
+  "description": "Два плагіни, що ріжуть зайвий текст агента: CCShut — коментарі в коді (проти context rot), Shut — балачки в чаті (економія токенів). Відповіді українською.",
   "owner": {
     "name": "Niedvin"
   },
@@ -10,13 +10,13 @@
       "name": "ccshut",
       "displayName": "CCShut",
       "source": "./plugins/ccshut",
-      "description": "Holds code comments to two gates: a comment ships only if it stays true after the code is rewritten and a senior could not have recovered it from the code. One dated line each, under 5% of a file's lines.",
+      "description": "Проти context rot: коментар пишеться, лише якщо лишиться правдивим після переписування коду і якщо сеньйор не відновив би його з самого коду. Один рядок із датою, менше 5% рядків файлу; застарілі й декоративні коментарі видаляються.",
       "version": "2.4.1",
       "author": {
         "name": "Niedvin"
       },
-      "homepage": "https://github.com/Niedvin/Shut",
-      "repository": "https://github.com/Niedvin/Shut",
+      "homepage": "https://github.com/Niedvin/Shutuk",
+      "repository": "https://github.com/Niedvin/Shutuk",
       "license": "MIT",
       "category": "productivity",
       "keywords": [
@@ -28,16 +28,16 @@
       ]
     },
     {
-      "name": "bequiet",
-      "displayName": "BeQuiet",
-      "source": "./plugins/bequiet",
-      "description": "Splits session speech into four shapes: a four-word English step label while working, plain Ukrainian for the question, the warning and the 8-line final answer. No progress chatter, no announcing a tool call.",
+      "name": "shut",
+      "displayName": "Shut",
+      "source": "./plugins/shut",
+      "description": "Економія токенів: прибирає звіти про процес, оголошення викликів інструментів і решту тексту, який нічого не змінює. Чотири форми — англійська мітка кроку до 4 слів, а питання, попередження і фінальна відповідь (до 8 рядків) українською. Код і результат роботи не чіпає.",
       "version": "2.5.1",
       "author": {
         "name": "Niedvin"
       },
-      "homepage": "https://github.com/Niedvin/Shut",
-      "repository": "https://github.com/Niedvin/Shut",
+      "homepage": "https://github.com/Niedvin/Shutuk",
+      "repository": "https://github.com/Niedvin/Shutuk",
       "license": "MIT",
       "category": "productivity",
       "keywords": [

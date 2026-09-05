@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install CCShut and BeQuiet into every agent on this machine that reads skills.
+# Install CCShut and Shut into every agent on this machine that reads skills.
 #
 # The macOS twin of install.py. Needs nothing installed: bash, unzip, osascript and
 # chmod all ship with macOS. On Linux it needs node for the JSON work.
@@ -34,8 +34,8 @@ CODEX_HOOKS="$HOME/.codex/hooks.json"
 CODEX_HOOK_DIR="$HOME/.codex/hooks"
 CODEX_CONFIG="$HOME/.codex/config.toml"
 
-PACKAGES="ccshut bequiet"
-zip_for() { case "$1" in ccshut) echo CCShut.zip ;; bequiet) echo BeQuiet.zip ;; esac; }
+PACKAGES="ccshut shut"
+zip_for() { case "$1" in ccshut) echo CCShut.zip ;; shut) echo Shut.zip ;; esac; }
 
 # Read by the installers only; a Claude Code plugin has no use for them — 2026-09-05
 INSTALLER_ONLY="manifest.json always-on.md flat"

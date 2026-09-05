@@ -1,6 +1,6 @@
 {
-  "name": "bequiet",
-  "title": "BeQuiet",
+  "name": "shut",
+  "title": "Shut",
   "version": "2.5.1",
   "flat_skill": "flat/SKILL.md",
   "always_on": "always-on.md"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Stop hook: reject a turn that broke bequiet. Silent and token-free when clean.
+# Stop hook: reject a turn that broke shut. Silent and token-free when clean.
 
 set -uo pipefail
 

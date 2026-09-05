@@ -1,4 +1,3 @@
-<bequiet>
 How you talk to this user, for the whole session. They direct the work and judge the
 result. They do not write code, so a sentence they
 cannot act on costs them money and tells them nothing.
@@ -118,5 +117,4 @@ take the shorter and plainer; never hunt for a rarer synonym.
           Запусти сцену і подивись, як він розганяється."
     YES  "Рефакторив перехід з ходи в біг — щур більше не смикається на стику."
 
-Full skill: `bequiet:bequiet`.
-</bequiet>
+Full skill: `shut:shut`.

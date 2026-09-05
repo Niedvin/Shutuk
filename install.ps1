@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Install CCShut and BeQuiet into every agent on this machine that reads skills.
+    Install CCShut and Shut into every agent on this machine that reads skills.
 
 .DESCRIPTION
     The PowerShell twin of install.py. Needs nothing but Windows PowerShell 5.1, which
@@ -38,7 +38,7 @@ $ScanDepth = 4
 $ClaudeHome = if ($env:CLAUDE_CONFIG_DIR) { $env:CLAUDE_CONFIG_DIR } else { Join-Path $UserHome '.claude' }
 $ClaudeOutputStyles = Join-Path $ClaudeHome 'output-styles'
 
-$PackageZips = [ordered]@{ ccshut = 'CCShut.zip'; bequiet = 'BeQuiet.zip' }
+$PackageZips = [ordered]@{ ccshut = 'CCShut.zip'; shut = 'Shut.zip' }
 
 # Read by the installers only; a Claude Code plugin has no use for them — 2026-09-05
 $InstallerOnly = @('manifest.json', 'always-on.md', 'flat')
@@ -502,7 +502,7 @@ function Save-State($State) {
 function Set-ClaudeSettings {
     <#
       `language` is not set and is actively removed: any value injects an "Always respond in
-      <lang>" block covering all explanations, which overrides bequiet's English-label /
+      <lang>" block covering all explanations, which overrides shut's English-label /
       Ukrainian-answer split whichever language it names.
     #>
     $notes = New-Object System.Collections.ArrayList

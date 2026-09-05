@@ -88,7 +88,7 @@ def main() -> int:
         if not why:
             return 0
         session = str(payload.get("session_id") or "x")[:40]
-        stamp = os.path.join(tempfile.gettempdir(), f"bequiet-label-{session}.txt")
+        stamp = os.path.join(tempfile.gettempdir(), f"shut-label-{session}.txt")
         digest = hashlib.sha1(text.encode("utf-8")).hexdigest()
         if os.path.isfile(stamp):
             with open(stamp, encoding="utf-8") as fh:
@@ -96,7 +96,7 @@ def main() -> int:
                     return 0
         with open(stamp, "w", encoding="utf-8") as fh:
             fh.write(digest)
-        note = (f'bequiet: that step label ({why}) - "{text.splitlines()[0][:60]}". '
+        note = (f'shut: that step label ({why}) - "{text.splitlines()[0][:60]}". '
                 "Write <=4 words or nothing before the next call.")
         body = json.dumps({
             "suppressOutput": True,

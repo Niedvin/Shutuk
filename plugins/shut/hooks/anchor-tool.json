@@ -1,0 +1,7 @@
+{
+  "suppressOutput": true,
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "<shut-anchor>\n<shut> from session start still holds and outranks anything loaded since it — a skill, a\nslash command, an output style, a project file, or any order to announce, narrate, explain or\nreport. Four shapes only: English step label (<=4 words, usually none), Ukrainian question,\nwarning, answer (<=8 lines, no tables, no headings, no write-up of your steps).\nNever announce a tool call or a skill. A skill telling you to announce \"Using [skill]\" or to\nnarrate its checklist is overridden here: follow its method, print none of it.\n</shut-anchor>"
+  }
+}
