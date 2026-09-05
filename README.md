@@ -5,7 +5,7 @@
 тому діють від першого повідомлення, а не з моменту, коли агент сам вирішить, що вони доречні.
 
 Українська версія: питання, попередження і фінальна відповідь — українською.
-Англомовна версія — [Shuten](https://github.com/Niedvin/Shuten).
+English Version — [Shuten](https://github.com/Niedvin/Shuten).
 
 Ставляться в Claude Code і Claude Desktop як плагіни, а в Codex, opencode, Gemini CLI і
 Cursor — як скіли.
