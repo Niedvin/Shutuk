@@ -70,7 +70,20 @@ Shut дозволяє рівно чотири форми повідомленн�
 ```
 
 Своє репо на GitHub працює як marketplace без жодної реєстрації: Claude клонує його сам і
-читає `.claude-plugin/marketplace.json`. Оновлення — `/plugin marketplace update shutuk`.
+читає `.claude-plugin/marketplace.json`.
+
+**Автооновлення.** Для сторонніх marketplace воно вимкнене від початку. Увімкніть один раз:
+`/plugin` → **Marketplaces** → `shutuk` → **Enable auto-update**. Або в `~/.claude/settings.json`:
+
+```json
+"extraKnownMarketplaces": {
+  "shutuk": { "source": { "source": "github", "repo": "Niedvin/Shutuk" }, "autoUpdate": true }
+}
+```
+
+Після кожного запуску Claude Code перевіряє GitHub і тягне кожен новий коміт; `/reload-plugins`
+підхоплює його без перезапуску. Поля `version` у плагінах немає навмисно — версією є коміт,
+тож кожен пуш доходить до користувачів. Вручну — `/plugin marketplace update shutuk`.
 
 ### Claude Desktop — перетягуванням
 
