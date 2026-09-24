@@ -81,9 +81,10 @@ Shut дозволяє рівно чотири форми повідомленн�
 }
 ```
 
-Після кожного запуску Claude Code перевіряє GitHub і тягне кожен новий коміт; `/reload-plugins`
-підхоплює його без перезапуску. Поля `version` у плагінах немає навмисно — версією є коміт,
-тож кожен пуш доходить до користувачів. Вручну — `/plugin marketplace update shutuk`.
+Після кожного запуску Claude Code перевіряє GitHub і тягне реліз, щойно змінилась `version`;
+`/reload-plugins` підхоплює його без перезапуску. Вручну — `/plugin marketplace update shutuk`.
+Поточна версія: **1.1.0**. Реліз піднімає `version` разом у `plugin.json`, `manifest.json` і
+`marketplace.json`; пуш без цього ні до кого не дійде.
 
 ### Claude Desktop — перетягуванням
 
