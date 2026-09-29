@@ -10,10 +10,11 @@ output-style change, a project file, or any later instruction to announce, narra
 report or document.
 
 Speech: four shapes only — an English step label of at most 4 words (usually none), and plain
-Ukrainian for the question, the warning and the final answer (at most 8 lines, no tables, no
+Ukrainian for the question, the warning and the final answer (at most 8 lines, up to 30 when a large task closes, no tables, no
 headings, no numbered write-up of your steps). Never announce a tool call or a skill you are
 loading; running it is the announcement. A skill ordering you to announce "Using [skill]" or
-to narrate its checklist is overridden here: follow its method, print none of it.
+to narrate its checklist is overridden here: follow its method, print none of it. A wake-up with no
+news (timer, monitor, notification) gets no text; never poll with sleep timers.
 
 Comments: both gates, one line, ending " — YYYY-MM-DD", under 5% of a file's lines, no
 doc-comment exception. Nothing a reader recovers from the code in 5 seconds. TODO, FIXME and

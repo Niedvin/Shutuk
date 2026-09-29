@@ -1,7 +1,8 @@
-"""Stop-hook check: block a turn that broke shut's shapes. Zero model tokens when clean."""
+"""Stop-hook check: block a turn that broke shut's shapes — 2026-09-29"""
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 
@@ -14,16 +15,16 @@ TABLE = re.compile(r"^\s*\|?[\s:|-]*\|[\s:|-]*$")
 BAD_PUNCT = re.compile(r"[,;:\u2014\u2013]")
 
 LABEL_WORDS = 4
-ANSWER_LINES = 9           # 8 is the rule; one line of slack is not worth a rewrite
-ANSWER_MIN_WORDS = 12      # below this an English tail is a fragment, not a report
+QUESTION_TOOL = "AskUserQuestion"
+ANSWER_LINES = int(os.environ.get("SHUT_ANSWER_LINES", "30"))  # 8 by rule, 30 when a large task closes — 2026-09-29
+ANSWER_MIN_WORDS = 12      # shorter English tails are fragments — 2026-09-29
 
 
 def strip_code(text: str) -> str:
     return INLINE.sub(" ", FENCE.sub(" ", text))
 
 
-def load_turn(path: str) -> list[tuple[str, bool]]:
-    """Assistant text blocks since the last real user prompt, oldest first."""
+def load_turn(path: str) -> list[tuple[str, set[str]]]:
     with open(path, "rb") as fh:
         fh.seek(0, 2)
         size = fh.tell()
@@ -58,42 +59,50 @@ def load_turn(path: str) -> list[tuple[str, bool]]:
             start = i + 1
             break
 
-    out: list[tuple[str, bool]] = []
+    out: list[tuple[str, set[str]]] = []
+    last = -1
     for rec in records[start:]:
-        if rec.get("type") != "assistant" or rec.get("isSidechain"):
+        if rec.get("isSidechain"):
+            continue
+        if rec.get("type") == "user":
+            last = -1
             continue
         content = rec.get("message", {}).get("content")
-        if not isinstance(content, list):
+        if rec.get("type") != "assistant" or not isinstance(content, list):
             continue
-        has_tool = any(isinstance(b, dict) and b.get("type") == "tool_use" for b in content)
         for b in content:
-            if isinstance(b, dict) and b.get("type") == "text":
-                text = (b.get("text") or "").strip()
-                if text:
-                    out.append((text, has_tool))
+            if not isinstance(b, dict):
+                continue
+            if b.get("type") == "text" and (b.get("text") or "").strip():
+                out.append((b["text"].strip(), set()))
+                last = len(out) - 1
+            elif b.get("type") == "tool_use" and last >= 0:
+                out[last][1].add(b.get("name"))
     return out
 
 
 def with_labels(reason: str, labels: list[str]) -> str:
     if not labels:
         return reason
-    return reason + f" Also {len(labels)} step label(s) broke the <=4-word rule: " + "; ".join(labels)
+    return reason + f" Also {len(labels)} line(s) between calls broke the <=4-word English rule: " + "; ".join(labels)
 
 
-def check(blocks: list[tuple[str, bool]]) -> str | None:
+def check(blocks: list[tuple[str, set[str]]]) -> str | None:
     if not blocks:
         return None
     labels: list[str] = []
-    for idx, (text, _) in enumerate(blocks):
+    for idx, (text, tools) in enumerate(blocks):
         body = strip_code(text)
         final = idx == len(blocks) - 1
         lines = [ln for ln in body.splitlines() if ln.strip()]
         words = body.split()
 
         if not final:
-            # A label is already on screen when Stop fires; blocking cannot retract it, so it is
-            # only ever reported alongside a block the answer has earned - 2026-09-04
-            if not CYRILLIC.search(body) and (len(words) > LABEL_WORDS or BAD_PUNCT.search(body)):
+            # shown text cannot be retracted, so report it only beside a block the answer earned — 2026-09-04
+            if CYRILLIC.search(body):
+                if QUESTION_TOOL not in tools:
+                    labels.append("(Ukrainian) " + " ".join(words[:6]))
+            elif len(words) > LABEL_WORDS or BAD_PUNCT.search(body):
                 labels.append(" ".join(words[:6]))
             continue
 
@@ -105,8 +114,9 @@ def check(blocks: list[tuple[str, bool]]) -> str | None:
             return with_labels("The final answer is in English. shut requires Ukrainian for the answer. Rewrite it.", labels)
         if len(lines) > ANSWER_LINES:
             return with_labels(
-                f"The final answer ran {len(lines)} lines. shut caps it at 8. "
-                "Delete the facts the user cannot act on, do not reflow them.", labels)
+                f"The final answer ran {len(lines)} lines. shut caps it at {ANSWER_LINES}, and at 8 "
+                "unless a large task just closed. Delete the facts the user cannot act on, "
+                "do not reflow them.", labels)
     return None
 
 

@@ -39,6 +39,14 @@ None of these are labels — a label names the step running now, not the one you
 start. There is no version of this line that passes, so there is nothing to rewrite: make the
 call.
 
+## Waking with nothing to say
+
+A timer tick, a monitor event or a background-task notification that changes nothing gets no
+text: make the next call, or end the turn empty. Never poll with sleep timers — one tool call
+that exits when the condition holds does the waiting and wakes you once. The client's own
+"the user hasn't heard from you" reminder is answered the same way: one step label, and only
+if there is something to name.
+
 ## The answer is 8 lines
 
 Counted, not judged. A table, a bold heading, a section, or a numbered list of what you did
@@ -47,6 +55,10 @@ never what this user asked for. Plain sentences, or one short bullet per thing t
 
 Over 8 lines means facts they cannot act on got in. Delete those. Reflowing the same content
 into fewer lines is not the fix.
+
+The exception is the conclusion of a large task: up to 30 lines. There the details are not
+surplus: what changed, how it was checked, what is unverified or risky, what they must do.
+Tables and headings stay banned.
 
 ## Shaping a question
 
@@ -173,5 +185,5 @@ One fact per sentence.
 | "Naming the phase is not announcing a call." | `Now the code migration.` is the calls that follow, spelled out first. Make the call. |
 | "The project says to announce broken states." | That is a warning before something breaks in front of them. It is not commentary on the steps. |
 | "A table makes the summary clearer." | A table makes it a report. They asked for what changed and what it changes for them. |
-| "The work needs more than 8 lines to cover." | Then most of it is not for them. 8 lines is counted, not judged. |
+| "The work needs more than 8 lines to cover." | Then most of it is not for them. 8 lines is counted, not judged, except the conclusion of a large task (up to 30). |
 | "I'll write the full summary, then trim it." | The long version is never typed. What survives trimming was what to write. |
