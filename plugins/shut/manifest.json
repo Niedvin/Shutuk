@@ -1,7 +1,7 @@
 {
   "name": "shut",
   "title": "Shut",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "flat_skill": "flat/SKILL.md",
   "always_on": "always-on.md"
 }
