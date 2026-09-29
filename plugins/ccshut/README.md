@@ -26,10 +26,21 @@ remove it; the next session starts clean.
 | `hooks/build.py` | Rebuilds the payload from `context.md`. |
 | `hooks/session-start` | The hook. Rebuilds if stale, then prints the payload. |
 | `hooks/run-hook.cmd` | Polyglot cmd/bash wrapper so the hook runs on Windows too. |
+| `hooks/comment_gate.py` | PostToolUse: after `Write`, `Edit` and `MultiEdit`, notes undated comments and files over 8% comment lines. Never blocks. |
 | `skills/ccshut/SKILL.md` | The full rule, loaded on demand. |
 
 The payload is built ahead of time rather than escaped at run time: bash 5.3's pattern
 substitution eats the backslashes that JSON string escapes are made of.
+
+## The comment gate
+
+`hooks/comment_gate.py` reads the file that was just written and adds a note when a comment is
+undated or comments take more than 8% of the lines. It never blocks. It counts whole-line and
+trailing comments in `#`, `//` and `--` languages (`.ps1`, `Makefile` and `Dockerfile` included)
+and `/* */` blocks, and skips text inside strings and Python triple quotes.
+
+It does not see docstrings, files written through Bash, PowerShell or an MCP tool, or file types
+without a comment marker in its table. The rule still covers them; the note is only a backstop.
 
 ## Editing the rule
 
